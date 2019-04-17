@@ -34,9 +34,9 @@ public class MyUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
 
 
-        int min = -4;
-        int max = 4;
-        int chartRange = max - min;
+        double min = -3.2;
+        double max = 3.3;
+        double chartRange = max - min;
         double baseSliderInitValue = max - (chartRange / 2d);
         double rangeInitValue = (chartRange / 2d);
 
@@ -44,7 +44,7 @@ public class MyUI extends UI {
         Property<Double> rangeProp = new ObjectProperty<>(0d);
 
         String baseCaption = "center";
-        Slider baseSlider = new Slider(baseCaption, min, max);
+        Slider baseSlider = new Slider(baseCaption, ((int) min), ((int) max));
         baseSlider.setImmediate(true);
         baseSlider.setResolution(1);
         baseSlider.setWidth("100%");
@@ -53,7 +53,7 @@ public class MyUI extends UI {
         baseProp.setValue(baseSliderInitValue);
 
         String rangeCaption = "range";
-        Slider rangeSlider = new Slider(rangeCaption, 0, chartRange);
+        Slider rangeSlider = new Slider(rangeCaption, 0, ((int) chartRange));
         rangeSlider.setImmediate(true);
         rangeSlider.setResolution(1);
         rangeSlider.setWidth("100%");
@@ -61,21 +61,25 @@ public class MyUI extends UI {
         rangeProp.setValue(rangeInitValue);
 
         final TextField rangeTextField = new TextField(rangeCaption, rangeProp);
+        DataSeries polygon = new DataSeries();
         DataSeriesItem topLeft = new DataSeriesItem(0, -4);
         DataSeriesItem topRight = new DataSeriesItem(0, 4);
         DataSeriesItem bottomLeft = new DataSeriesItem(9, 4);
         DataSeriesItem bottomRight = new DataSeriesItem(9, -4);
-        DataSeries polygon = new DataSeries();
+        polygon.add(topLeft);
+        polygon.add(topRight);
+        polygon.add(bottomLeft);
+        polygon.add(bottomRight);
         Property.ValueChangeListener listener = event -> {
             double base = baseProp.getValue();
             double range = rangeProp.getValue();
 
-            topLeft.setY(base - range/2);
-            topRight.setY(base + range/2);
-            bottomLeft.setY(base + range/2);
-            bottomRight.setY(base - range/2);
+            topLeft.setY(base - range / 2);
+            topRight.setY(base + range / 2);
+            bottomLeft.setY(base + range / 2);
+            bottomRight.setY(base - range / 2);
 
-            double rangeLeft = Math.min(Math.abs(min - base), Math.abs(max - base))*2;
+            double rangeLeft = Math.min(Math.abs(min - base), Math.abs(max - base)) * 2;
             rangeSlider.setMax(rangeLeft);
 
             polygon.update(topLeft);
@@ -88,53 +92,30 @@ public class MyUI extends UI {
             System.out.println("rangeLeft = " + rangeLeft);
 
         };
-        listener.valueChange(null);
 
-//        baseSlider.addValueChangeListener(listener);
-//        rangeSlider.addValueChangeListener(listener);
-//        rangeTextField.addValueChangeListener(listener);
-
-        List<AbstractField> list = new ArrayList<>();
-        list.add(rangeTextField);
         rangeTextField.setImmediate(true);
-        list.add(baseTextField);
+        rangeTextField.addValueChangeListener(listener);
         baseTextField.setImmediate(true);
-        list.add(rangeSlider);
+        baseTextField.addValueChangeListener(listener);
         rangeSlider.setImmediate(true);
-        list.add(rangeTextField);
-        baseTextField.setImmediate(true);
-        list.forEach(abstractField -> abstractField.addValueChangeListener(listener));
+        rangeSlider.addValueChangeListener(listener);
+        baseSlider.setImmediate(true);
+        baseSlider.addValueChangeListener(listener);
 
         HorizontalLayout horizontalLayout = new HorizontalLayout(baseSlider, baseTextField, rangeSlider, rangeTextField);
         horizontalLayout.setWidth("100%");
         layout.addComponents(horizontalLayout);
 
-//        layout.addComponents(name, button);
         layout.setMargin(true);
         layout.setSpacing(true);
 
         setContent(layout);
-//        Slider slider = new Slider(1, 100);
-//        slider.setImmediate(true);
-//        layout.addComponent(slider);
 
-        polygon.add(topLeft);
-        polygon.add(topRight);
-        polygon.add(bottomLeft);
-        polygon.add(bottomRight);
-//        BeanItemContainer<MyPoint2D> integerBeanItemContainer = new BeanItemContainer<>(MyPoint2D.class);
-//        MyPoint2D topLeft = new MyPoint2D(0, 4);
-//        integerBeanItemContainer.addBean(topLeft);
-//        integerBeanItemContainer.addBean(new MyPoint2D(0, -4));
-//        integerBeanItemContainer.addBean(new MyPoint2D(8, -4));
-//        integerBeanItemContainer.addBean(new MyPoint2D(8, 4));
-        IndexedContainer indexedContainer = new IndexedContainer();
-//        indexedContainer.addItem()
 
         Chart chart = initChart(polygon);
 
         layout.addComponent(chart);
-//        layout.addComponent(otherChart());
+        listener.valueChange(null);
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
@@ -152,7 +133,7 @@ public class MyUI extends UI {
         optionsPolygon.setColor(new SolidColor(0, 0, 224, opacity));
 //        optionsPolygon.setEnableMouseTracking(false);
         polygon.setPlotOptions(optionsPolygon);
-        polygon.setName("Target");
+        polygon.setName("Zielbereich");
 
         conf.addSeries(polygon);
 
@@ -188,7 +169,7 @@ public class MyUI extends UI {
         legend.setAlign(HorizontalAlign.RIGHT);
         legend.setVerticalAlign(VerticalAlign.TOP);
         legend.setX(-100);
-        legend.setY(100);
+        legend.setY(0);
         legend.setFloating(true);
         legend.setBorderWidth(1);
         legend.setBackgroundColor(new SolidColor("#FFFFFF"));
@@ -218,22 +199,6 @@ public class MyUI extends UI {
         series.add(new DataSeriesItem(categoriesY[8], 3.3));
         series.add(new DataSeriesItem(categoriesY[9], 3.3));
         conf.addSeries(series);
-
-//        PlotOptionsAreasplinerange plotOptions = new PlotOptionsAreasplinerange();
-//        plotOptions.setPointStart(-4);
-//        plotOptions.setStacking(Stacking.NORMAL);
-//        RangeSeries range = new RangeSeries("range", new Integer[]{-4, +4}, new Integer[]{-4,2}, new Integer[]{-5,5});
-//        range.setPlotOptions(plotOptions);
-////        areaSeries.add();
-//        DataSeries areaSeries = new DataSeries();
-//        areaSeries.setPlotOptions(plotOptions);
-//        areaSeries.add(new DataSeriesItem("series1", 4.3));
-//        areaSeries.add(new DataSeriesItem("series2", -4.3));
-//        conf.addSeries(range);
-
-
-        chart.drawChart(conf);
-
         return chart;
     }
 
