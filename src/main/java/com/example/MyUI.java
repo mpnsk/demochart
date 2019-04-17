@@ -10,10 +10,14 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.IndexedContainer;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Label;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window
@@ -30,53 +34,48 @@ public class MyUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
 
 
-        final Bound bound = new Bound();
-        BeanItem<Bound> beanItem = new BeanItem<>(bound);
-
-        final Property<Float> integerProperty = (Property<Float>) beanItem.getItemProperty("value");
-        final TextField lowerBoundTextField = new TextField("lower bound", integerProperty);
-        final TextField upperBoundTextField = new TextField("lower bound", integerProperty);
-
-
-        final TextField name = new TextField();
-        name.setCaption("Type your name here:");
-
-        Button button = new Button("Click Me!");
-        button.addClickListener(e -> {
-            layout.addComponent(new Label("Thanks " + name.getValue()
-                    + ", it works!"));
-        });
         int min = -4;
         int max = 4;
         int chartRange = max - min;
-        Slider baseSlider = new Slider("base", min, max);
+        double baseSliderInitValue = max - (chartRange / 2d);
+        double rangeInitValue = (chartRange / 2d);
+
+        Property<Double> baseProp = new ObjectProperty<>(0d);
+        Property<Double> rangeProp = new ObjectProperty<>(0d);
+
+        String baseCaption = "center";
+        Slider baseSlider = new Slider(baseCaption, min, max);
         baseSlider.setImmediate(true);
-        int baseSliderInitValue = max - (chartRange / 2);
-        baseSlider.setValue((double) baseSliderInitValue);
         baseSlider.setResolution(1);
         baseSlider.setWidth("100%");
+        baseSlider.setPropertyDataSource(baseProp);
+        final TextField baseTextField = new TextField(baseCaption, baseProp);
+        baseProp.setValue(baseSliderInitValue);
 
-        Slider rangeSlider = new Slider("range", 0, chartRange);
-        rangeSlider.setValue((double) (chartRange / 2));
+        String rangeCaption = "range";
+        Slider rangeSlider = new Slider(rangeCaption, 0, chartRange);
         rangeSlider.setImmediate(true);
         rangeSlider.setResolution(1);
         rangeSlider.setWidth("100%");
+        rangeSlider.setPropertyDataSource(rangeProp);
+        rangeProp.setValue(rangeInitValue);
+
+        final TextField rangeTextField = new TextField(rangeCaption, rangeProp);
         DataSeriesItem topLeft = new DataSeriesItem(0, -4);
         DataSeriesItem topRight = new DataSeriesItem(0, 4);
         DataSeriesItem bottomLeft = new DataSeriesItem(9, 4);
         DataSeriesItem bottomRight = new DataSeriesItem(9, -4);
         DataSeries polygon = new DataSeries();
         Property.ValueChangeListener listener = event -> {
-            float base = baseSlider.getValue().floatValue();
-            float range = rangeSlider.getValue().floatValue() / 2;
+            double base = baseProp.getValue();
+            double range = rangeProp.getValue();
 
-            topLeft.setY(base - range);
-            topRight.setY(base + range);
-            bottomLeft.setY(base + range);
-            bottomRight.setY(base - range);
+            topLeft.setY(base - range/2);
+            topRight.setY(base + range/2);
+            bottomLeft.setY(base + range/2);
+            bottomRight.setY(base - range/2);
 
-//            int rangeLeft = chartRange - Math.abs(base);
-            float rangeLeft = Math.min(Math.abs(min - base), Math.abs(max - base));
+            double rangeLeft = Math.min(Math.abs(min - base), Math.abs(max - base))*2;
             rangeSlider.setMax(rangeLeft);
 
             polygon.update(topLeft);
@@ -89,9 +88,24 @@ public class MyUI extends UI {
             System.out.println("rangeLeft = " + rangeLeft);
 
         };
-        baseSlider.addValueChangeListener(listener);
-        rangeSlider.addValueChangeListener(listener);
-        HorizontalLayout horizontalLayout = new HorizontalLayout(baseSlider, rangeSlider);
+        listener.valueChange(null);
+
+//        baseSlider.addValueChangeListener(listener);
+//        rangeSlider.addValueChangeListener(listener);
+//        rangeTextField.addValueChangeListener(listener);
+
+        List<AbstractField> list = new ArrayList<>();
+        list.add(rangeTextField);
+        rangeTextField.setImmediate(true);
+        list.add(baseTextField);
+        baseTextField.setImmediate(true);
+        list.add(rangeSlider);
+        rangeSlider.setImmediate(true);
+        list.add(rangeTextField);
+        baseTextField.setImmediate(true);
+        list.forEach(abstractField -> abstractField.addValueChangeListener(listener));
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout(baseSlider, baseTextField, rangeSlider, rangeTextField);
         horizontalLayout.setWidth("100%");
         layout.addComponents(horizontalLayout);
 
