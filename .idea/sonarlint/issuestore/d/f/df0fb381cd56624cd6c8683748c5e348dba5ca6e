@@ -1,0 +1,23 @@
+
+bsquid:CommentedOutCodeLinel"<This block of commented-out lines of code should be removed.(©¶Ï•
+hsquid:CommentedOutCodeLineß"<This block of commented-out lines of code should be removed.(¶ƒÐ¿øÿÿÿÿ
+csquid:CommentedOutCodeLine˜"<This block of commented-out lines of code should be removed.(Ò…ó
+bsquid:CommentedOutCodeLineS"<This block of commented-out lines of code should be removed.(ñçÜí
+Osquid:S3878“"8Remove this array creation and simply pass the elements.(©«—
+O
+squid:S106J"9Replace this use of System.out or System.err by a logger.(ˆ›Á¤
+bsquid:CommentedOutCodeLineA"<This block of commented-out lines of code should be removed.(¼Žª 
+bsquid:CommentedOutCodeLine`"<This block of commented-out lines of code should be removed.(ß€ËÖ
+T
+squid:S106K"9Replace this use of System.out or System.err by a logger.(¤šÍÁøÿÿÿÿ
+Hsquid:S1602%",Remove useless curly braces around statement(Œ»…ùÿÿÿÿ
+Zsquid:S1854f"DRemove this useless assignment to local variable "indexedContainer".(Ýÿl
+\squid:S21841"@Cast one of the operands of this integer division to a "double".(à¶„¿øÿÿÿÿ
+gsquid:CommentedOutCodeLineX"<This block of commented-out lines of code should be removed.(™ÈÒÉþÿÿÿÿ
+csquid:CommentedOutCodeLineš"<This block of commented-out lines of code should be removed.(û‡Øÿ
+Ksquid:S1481f"5Remove this unused "indexedContainer" local variable.(Ýÿl
+hsquid:CommentedOutCodeLine÷"<This block of commented-out lines of code should be removed.(ÙŠæ½ûÿÿÿÿ
+hsquid:CommentedOutCodeLine²"<This block of commented-out lines of code should be removed.(ûéÝœüÿÿÿÿ
+O
+squid:S106L"9Replace this use of System.out or System.err by a logger.(©Íò¤
+Usquid:S3878‡"8Remove this array creation and simply pass the elements.(­éàœüÿÿÿÿ
