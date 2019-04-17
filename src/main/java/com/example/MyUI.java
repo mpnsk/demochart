@@ -160,7 +160,7 @@ public class MyUI extends UI {
         XAxis x = new XAxis();
         x.setCategories(categoriesY);
         AxisTitle title = new AxisTitle("Skala / Ausprägung");
-        title.setAlign(VerticalAlign.TOP);
+//        title.setAlign(VerticalAlign.TOP);
         x.setTitle(title);
         conf.addxAxis(x);
 
@@ -179,6 +179,7 @@ public class MyUI extends UI {
 //        conf.disableCredits();
         DataSeries series = new DataSeries();
         PlotOptionsSpline splinePlotOptions = new PlotOptionsSpline();
+        series.setName("Spline");
         splinePlotOptions.setStacking(Stacking.NORMAL);
         Marker marker = new Marker();
         marker.setLineWidth(2);
